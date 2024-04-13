@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { enqueueSnackbar } from 'notistack';
 import { loginUser, registerUser } from "../slices/authSlice";
 
 export const authApi = createApi({
@@ -27,7 +28,8 @@ export const authApi = createApi({
           const { data } = await queryFulfilled;
           dispatch(loginUser(data));
         } catch (error) {
-          console.log(error);
+          console.error("Login failed:", error);
+          enqueueSnackbar("Login failed", { variant: "error" });
         }
       },
     }),
