@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button"
 import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
-import { zodResolver } from '@hookform/resolvers/zod';
 
 const schema = z.object({
     email: z
@@ -17,22 +17,28 @@ const schema = z.object({
 
 
 
-const Signup = () => {
+const Login = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const { enqueueSnackbar } = useSnackbar()
+    const { enqueueSnackbar } = useSnackbar();
 
-    // const onHandleSubmit = async (data) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(schema),
+    });
+
+    // const handleSignInHere = async (data) => {
     //     try {
-    //         const res = await handleSignUp(data);
+    //         const res = await handleSignIn(data);
     //         const success = res.success || false;
     //         const errorFromServer = res.error || "";
-    //         console.log(res);
 
     //         if (success) {
-    //             navigate('/login');
+    //             navigate('/myaccount');
     //         }
-
     //         if (errorFromServer) {
     //             if (errorFromServer === 'Пользователь уже существует') {
     //                 setError(errorFromServer);
@@ -41,29 +47,33 @@ const Signup = () => {
     //             }
     //         }
     //     } catch (error) {
-    //         enqueueSnackbar("Что-то пошло не так", { variant: "error" });
+    //         console.error("Error signing in:", error);
     //     }
     // }
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm({
-        resolver: zodResolver(schema),
-    });
-
 
     return (
-        <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[90px] mx-auto mb-[5rem] shadow-2xl p-6 rounded-3xl">
-            <h1 className="font-bold text-[38px] text-[#333333] mb-12">Регистрация</h1>
+        <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[70px] mx-auto shadow-2xl p-6 rounded-3xl">
+            <h1 className="font-bold text-[38px] text-[#333333] mb-12">Вход</h1>
             <form className="w-full flex flex-col">
                 <div className="mb-10">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="email" className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">Ваш E-mail</label>
+                    <div className="flex justify-between items-center mb-[3px]">
+                        <label htmlFor="email" className="ml-[2px] text-[#333333] text-2xl text-left self-start">Ваш E-mail</label>
                         {errors.email && (
                             <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
                                 {errors.email.message}
+                            </p>
+                        )}
+                    </div>
+                    <input {...register("email")}
+                        type="text" id="email" className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl" />
+                </div>
+                <div className="mb-2">
+                    <div className="flex justify-between items-center mb-[3px]">
+                        <label htmlFor="password" className="ml-[2px] text-[#333333] text-2xl text-left self-start">Пароль</label>
+                        {errors.password && (
+                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
+                                {errors.password.message}
                             </p>
                         )}
                         {
@@ -72,26 +82,15 @@ const Signup = () => {
                             </p>
                         }
                     </div>
-                    <input {...register("email")}
-                        type="text" id="email" className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl" />
-                </div>
-                <div className="mb-10">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="password" className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">Ваш Пароль</label>
-                        {errors.password && (
-                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
-                                {errors.password.message}
-                            </p>
-                        )}
-                    </div>
                     <input {...register("password")}
                         type="password" id="password" className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl appearance-none" />
                 </div>
-                <Button className="mb-[10px] self-center" disabled={isSubmitting}>Зарегистрироваться</Button>
+                <Link to="/recoverPassword" className="text-[#979797] leading-8 cursor-pointer text-center underline mb-14">Забыли пароль?</Link>
+                <Button className="mb-4 self-center px-20">Войти</Button>
             </form>
-            <Link to="/login" className="text-[#979797] leading-8 cursor-pointer disabled:cursor-not-allowed">Уже есть аккаунт? <span className="font-bold capitalize underline">Войти</span></Link>
+            <Link to="/signup" className="text-[#979797] text-center leading-8 cursor-pointer">Продолжая, вы даете согласие на <span className="font-bold underline">Oбработку персональных данных.</span></Link>
         </div>
     )
 }
 
-export default Signup
+export default Login;
