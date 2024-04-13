@@ -1,117 +1,113 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
-import { useGetQuizzesQuery } from '@/store/services/quizApi';
+import { useGetQuizQuery } from '@/store/services/quizApi';
+import { HashLoader } from 'react-spinners';
 
 const Quiz = () => {
-
-    const [data, { isLoading, isError, error }] = useGetQuizzesQuery()
-
-    useEffect(() => {
-        if (isError) {
-            console.error('Error fetching posts:', error);
-        } else {
-            console.log(data);
-        }
-    }, [isError, error, data]);
-
-    const mockQuizData = [
-        {
-            question: "Қазақша тілдің көпшілікші екінші есімін анықтаңыз:",
-            answers: ["шаңырақша", "сүйікті", "сабақ", "діңгіреген"],
-            correctAnswerIndex: 0
-        },
-        {
-            question: "Ағылшынша қосымшаға құстық есім кірістіріледі:",
-            answers: ["а", "an", "the", "that"],
-            correctAnswerIndex: 1
-        },
-        {
-            question: "Қазақша тілдің алғашқы есімін анықтаңыз:",
-            answers: ["ақ", "бай", "қол", "тұз"],
-            correctAnswerIndex: 0
-        },
-        {
-            question: "Ағылшынша қосымшаға құстық есім кірістіріледі:",
-            answers: ["a", "an", "the", "some"],
-            correctAnswerIndex: 1
-        },
-        {
-            question: "Қазақша тілдің қосымшағына салыстырмалы есімді анықтаңыз:",
-            answers: ["сөйлеу", "өндіру", "дәріп", "жүйе"],
-            correctAnswerIndex: 2
-        },
-        {
-            question: "Ағылшынша қосымшаға құстық есім кірістіріледі:",
-            answers: ["a", "an", "the", "that"],
-            correctAnswerIndex: 0
-        },
-        {
-            question: "Қазақша тілдің алғашқы есімін анықтаңыз:",
-            answers: ["күміс", "қол", "тұз", "ақ"],
-            correctAnswerIndex: 3
-        },
-        {
-            question: "Ағылшынша қосымшаға құстық есім кірістіріледі:",
-            answers: ["a", "an", "the", "that"],
-            correctAnswerIndex: 1
-        },
-        {
-            question: "Қазақша тілдің көпшілікші екінші есімін анықтаңыз:",
-            answers: ["шаңырақша", "бұтақша", "мінерша", "сүйікті"],
-            correctAnswerIndex: 3
-        },
-        {
-            question: "Ағылшынша қосымшаға құстық есім кірістіріледі:",
-            answers: ["a", "an", "the", "that"],
-            correctAnswerIndex: 2
-        }
-    ];
-
+    const { data: quizData, isLoading } = useGetQuizQuery("661ac8c6dd1c1e45ddb70927");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+    const [selectedOptionIndices, setSelectedOptionIndices] = useState(new Array(quizData?.questions.length).fill(null));
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [quizCompleted, setQuizCompleted] = useState(false);
+
 
     const handlePreviousQuestion = () => {
-        setCurrentQuestionIndex(prevIndex => Math.max(0, prevIndex - 1)); // Ensure index doesn't go below 0
+        setCurrentQuestionIndex(prevIndex => Math.max(0, prevIndex - 1));
+        setErrorMessage(null);
     };
 
     const handleNextQuestion = () => {
-        setCurrentQuestionIndex(prevIndex => Math.min(mockQuizData.length - 1, prevIndex + 1)); // Ensure index doesn't exceed array length
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex === quizData?.questions.length) {
+            setQuizCompleted(true);
+        } else {
+            setCurrentQuestionIndex(nextIndex);
+            setErrorMessage(null);
+        }
+    };
+
+    const handleSelectOption = (optionIndex) => {
+        const updatedSelections = [...selectedOptionIndices];
+        updatedSelections[currentQuestionIndex] = optionIndex;
+        setSelectedOptionIndices(updatedSelections);
+        setErrorMessage(null);
     };
 
     const handleSubmitAnswer = () => {
+        const selectedOptionIndex = selectedOptionIndices[currentQuestionIndex];
+        if (selectedOptionIndex !== null && selectedOptionIndex !== undefined) {
+            const currentQuestion = quizData.questions[currentQuestionIndex];
+            const selectedOption = currentQuestion.options[selectedOptionIndex];
+
+            if (selectedOption.isCorrect) {
+                setCorrectAnswersCount(prevCount => prevCount + 1);
+            }
+
+            handleNextQuestion();
+        } else {
+            setErrorMessage('Please select an answer');
+        }
     };
 
-    const currentQuestion = mockQuizData[currentQuestionIndex];
+    if (isLoading) return (
+        <div className='w-full flex items-center justify-center'>
+            <HashLoader size={70} color='#F8DB39' />
+        </div>
+    )
+
+
+    const currentQuestion = quizData.questions[currentQuestionIndex];
+    const allQuestionsAnswered = selectedOptionIndices.every(index => index !== null && index !== undefined);
 
     return (
-        <div className="flex flex-col w-full">
-            {
-                isLoading ? <p>Loading...</p> : (
-                    <>
-                        <div className="flex justify-between items-center mb-8">
-                            <h1 className="font-semibold text-[30px]">Quiz</h1>
-                            <p className="font-semibold text-[30px]">Easy</p>
+        !quizCompleted ? (
+            <div className="flex flex-col w-full">
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="font-semibold text-[30px]">Quiz</h1>
+                    <p className="font-semibold text-[30px]">Easy</p>
+                </div>
+                <ProgressBar progress={(currentQuestionIndex + 1) / quizData.questions.length * 100} className="mb-9" />
+                <div className="bg-[#F8DB39] text-center py-[57px] px-5 mb-5 rounded-[20px] text-white font-medium text-[26px]">
+                    {currentQuestion.questionText}
+                </div>
+                <div className="w-full grid grid-cols-4 gap-5 mb-[30px]">
+                    {currentQuestion.options.map((option, index) => (
+                        <div key={index} className={`bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px] border-[2px] ${selectedOptionIndices[currentQuestionIndex] === index ? 'border-purple-600' : 'border-transparent'}`} onClick={() => handleSelectOption(index)}>
+                            {option.optionText}
                         </div>
-                        <ProgressBar progress={(currentQuestionIndex + 1) / mockQuizData.length * 100} className="mb-9" />
-                        <div className="bg-[#F8DB39] text-center py-[57px] px-5 mb-5 rounded-[20px] text-white font-medium text-[26px]">
-                            {currentQuestion.question}
-                        </div>
-                        <div className="w-full grid grid-cols-4 gap-5 mb-[30px]">
-                            {currentQuestion.answers.map((answer, index) => (
-                                <div key={index} className="bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px]">
-                                    {answer}
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex justify-between items-center px-[25px]">
-                            <p onClick={handlePreviousQuestion} className="text-[#F8DB39] font-bold">Previous</p>
-                            <Button onClick={handleSubmitAnswer} className="bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px]">Submit</Button>
-                            <p onClick={handleNextQuestion} className="text-[#F8DB39] font-bold">Next</p>
-                        </div>
-                    </>
-                )
-            }
-        </div>
+                    ))}
+                </div>
+                <div className="flex items-center justify-between px-[25px]">
+                    {currentQuestionIndex !== 0 && (
+                        <p onClick={handlePreviousQuestion} className="text-[#F8DB39] font-bold cursor-pointer">Previous</p>
+                    )}
+                    <div className="flex justify-center flex-grow">
+                        {currentQuestionIndex === quizData?.questions.length - 1 && (
+                            <Button onClick={handleSubmitAnswer} className={`bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px] ${allQuestionsAnswered ? '' : 'hidden'}`}>
+                                {quizCompleted ? 'Completed' : 'Submit'}
+                            </Button>
+                        )}
+                    </div>
+                    {currentQuestionIndex !== quizData.questions.length - 1 && (
+                        <p onClick={handleNextQuestion} className="text-[#F8DB39] font-bold cursor-pointer">Next</p>
+                    )}
+                </div>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            </div>
+        ) : (
+            <div className="flex flex-col items-center w-full">
+                <h1 className="font-semibold text-4xl mb-8">Quiz Result</h1>
+                <div className="bg-[#F8DB39] text-center py-8 px-10 mb-8 rounded-lg text-white font-medium text-2xl">
+                    <p className="mb-4">Title: Quiz</p>
+                    <p className="text-[#4CAF50]">Total Correct Answers: {correctAnswersCount} out of {quizData.questions.length}</p>
+                </div>
+                <div className="flex justify-center w-full">
+                    <img src="/quiz_result_image.svg" alt="Quiz Result Image" className="w-full max-w-[600px]" />
+                </div>
+            </div>
+        )
     );
 }
 
