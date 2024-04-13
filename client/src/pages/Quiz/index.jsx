@@ -4,11 +4,13 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import { useGetQuizQuery } from "@/store/services/quizApi";
 import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { useUser } from "@/hooks/useUser";
+import { useUpdateUserQuizMutation } from "@/store/services/usersApi";
 
 const Quiz = () => {
-  const { data: quizData, isLoading } = useGetQuizQuery(
-    "661ac8c6dd1c1e45ddb70927"
-  );
+  const { id } = useParams();
+  const { data: quizData, isLoading } = useGetQuizQuery(id);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [selectedOptionIndices, setSelectedOptionIndices] = useState(
@@ -44,7 +46,10 @@ const Quiz = () => {
     setErrorMessage(null);
   };
 
-  const handleSubmitAnswer = () => {
+  const user = useUser();
+  const [saveQuiz, { isError, isSuccess }] = useUpdateUserQuizMutation();
+
+  const handleSubmitAnswer = async () => {
     const allQuestionsAnswered = selectedOptionIndices.every(
       (index) => index !== null && index !== undefined
     );
@@ -53,7 +58,22 @@ const Quiz = () => {
       return;
     }
 
-    setQuizCompleted(true);
+    const answers = selectedOptionIndices.map(
+      (index) =>
+        quizData.questions[currentQuestionIndex].options[index].optionText
+    );
+
+    try {
+      await saveQuiz({
+        token: user?.token,
+        quizId: id,
+        score: correctAnswersCount,
+      });
+
+      setQuizCompleted(true);
+    } catch (error) {
+      console.error("Error updating user quiz:", error);
+    }
   };
 
   useEffect(() => {
@@ -80,7 +100,9 @@ const Quiz = () => {
     <div className="flex flex-col w-full">
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-semibold text-[30px]">Quiz</h1>
-        <p className="font-semibold text-[30px]">Easy</p>
+        <p className="font-semibold text-[30px]">
+          {quizData?.difficulty ? quizData?.difficulty : "Easy"}
+        </p>
       </div>
       <ProgressBar
         progress={
