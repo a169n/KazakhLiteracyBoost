@@ -14,6 +14,16 @@ export const usersApi = createApi({
         url: `/users/${id}`,
       }),
     }),
+    updateUserQuiz: builder.mutation({
+      query: ({ token, ...data }) => ({
+        url: `/users/quiz`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     deleteUserById: builder.mutation({
       query: (id) => ({
         url: `/users/${id}`,
@@ -30,6 +40,8 @@ export const {
   // GET /users/:userId
   useGetUserByIdQuery,
   useLazyGetUserByIdQuery,
+  // PUT /users/quiz
+  useUpdateUserQuizMutation,
   // DELETE /users/:userId
   useDeleteUserByIdMutation,
 } = usersApi;

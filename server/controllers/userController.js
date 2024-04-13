@@ -23,6 +23,28 @@ const getUserById = async (req, res) => {
   }
 };
 
+const saveCompletedQuiz = async (req, res) => {
+  const user = req.user;
+  const { quizId, score } = req.body;
+
+  console.log(user)
+
+
+  try {
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.completedQuizzes.push({ quiz: quizId, score });
+    await user.save();
+
+    res.status(200).json({ message: "Quiz completed and score saved successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to save quiz and score" });
+  }
+};
+
 const deleteUserById = async (req, res) => {
   const userId = req.params.id;
 
@@ -40,5 +62,6 @@ const deleteUserById = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserById,
+  saveCompletedQuiz,
   deleteUserById,
 };
