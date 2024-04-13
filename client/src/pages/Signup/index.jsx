@@ -8,6 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterMutation } from "@/store/services/authApi";
 
 const schema = z.object({
+    name: z.string().trim().min(1, { message: "Это поле обязательно" }),
+    surname: z.string().trim().min(1, { message: "Это поле обязательно" }),
+    username: z.string().trim().min(1, { message: "Это поле обязательно" }),
     email: z
         .string()
         .trim()
@@ -23,27 +26,25 @@ const Signup = () => {
     const [error, setError] = useState("");
     const { enqueueSnackbar } = useSnackbar();
 
-
-    const [registerUser, { isLoading, isError }] = useRegisterMutation();
+    const [registerUser, { isError, isLoading }] = useRegisterMutation();
 
     const handleRegister = async (data) => {
         try {
             const response = await registerUser({
-                name: "test13",
-                surname: "Doe",
-                username: "asdfasdfsdf",
+                name: data.name,
+                surname: data.surname,
+                username: data.username,
                 email: data.email,
                 password: data.password,
             });
 
             if (!isError) {
-                enqueueSnackbar("Регистрация прошла успешно", { variant: "success" });
-            } else if (isError) {
+                enqueueSnackbar("Регистрация успешна!", { variant: "success" });
+            } else {
                 enqueueSnackbar("Что-то пошло не так", { variant: "error" });
             }
         } catch (error) {
             console.error("Registration failed:", error);
-            enqueueSnackbar("Что-то пошло не так", { variant: "error" });
         }
     };
 
@@ -64,6 +65,66 @@ const Signup = () => {
             <form
                 onSubmit={handleSubmit(handleRegister)}
                 className="w-full flex flex-col">
+                <div className="mb-10">
+                    <div className="flex justify-between items-center">
+                        <label
+                            htmlFor="name"
+                            className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">
+                            Имя
+                        </label>
+                        {errors.name && (
+                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
+                                {errors.name.message}
+                            </p>
+                        )}
+                    </div>
+                    <input
+                        {...register("name")}
+                        type="text"
+                        id="name"
+                        className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl"
+                    />
+                </div>
+                <div className="mb-10">
+                    <div className="flex justify-between items-center">
+                        <label
+                            htmlFor="surname"
+                            className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">
+                            Фамилия
+                        </label>
+                        {errors.surname && (
+                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
+                                {errors.surname.message}
+                            </p>
+                        )}
+                    </div>
+                    <input
+                        {...register("surname")}
+                        type="text"
+                        id="surname"
+                        className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl"
+                    />
+                </div>
+                <div className="mb-10">
+                    <div className="flex justify-between items-center">
+                        <label
+                            htmlFor="username"
+                            className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">
+                            Имя пользователя
+                        </label>
+                        {errors.username && (
+                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
+                                {errors.username.message}
+                            </p>
+                        )}
+                    </div>
+                    <input
+                        {...register("username")}
+                        type="text"
+                        id="username"
+                        className="w-full border-[#C0E3E5] solid border-[2.8px] rounded-[20px] px-7 py-3 text-[#979797] text-2xl"
+                    />
+                </div>
                 <div className="mb-10">
                     <div className="flex justify-between items-center">
                         <label
@@ -110,7 +171,7 @@ const Signup = () => {
                     />
                 </div>
                 <Button className="mb-[10px] self-center" disabled={isSubmitting}>
-                    {isLoading ? "Загрузка..." : "Зарегистрироваться"}
+                    {isLoading ? "Идет запрос..." : "Зарегистрироваться"}
                 </Button>
             </form>
             <Link
