@@ -4,6 +4,7 @@ import Layout from "./layout/Layout";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
 import Quizzes from "./pages/Quizzes";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="quiz/:id" element={<Quiz />} />
         <Route path="quizzes" element={<Quizzes />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
     </Routes>
   );

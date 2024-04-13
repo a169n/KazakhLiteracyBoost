@@ -9,9 +9,12 @@ export const usersApi = createApi({
         url: "/users",
       }),
     }),
-    getUserById: builder.query({
-      query: (id) => ({
-        url: `/users/${id}`,
+    getUser: builder.query({
+      query: (token) => ({
+        url: "/user",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
     updateUserQuiz: builder.mutation({
@@ -37,9 +40,9 @@ export const {
   // GET /users
   useGetAllUsersQuery,
   useLazyGetAllUsersQuery,
-  // GET /users/:userId
-  useGetUserByIdQuery,
-  useLazyGetUserByIdQuery,
+  // GET /user
+  useGetUserQuery,
+  useLazyGetUserQuery,
   // PUT /users/quiz
   useUpdateUserQuizMutation,
   // DELETE /users/:userId
