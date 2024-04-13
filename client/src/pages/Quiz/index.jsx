@@ -3,9 +3,7 @@ import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useGetQuizQuery } from "@/store/services/quizApi";
 import { HashLoader } from "react-spinners";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useUser } from "@/hooks/useUser";
+import { toast } from "react-toastify";
 
 const Quiz = () => {
   const { data: quizData, isLoading } = useGetQuizQuery(
@@ -18,9 +16,6 @@ const Quiz = () => {
   );
   const [errorMessage, setErrorMessage] = useState(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
-
-  const user = useUser();
-  console.log(user);
 
   const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => Math.max(0, prevIndex - 1));
@@ -57,6 +52,7 @@ const Quiz = () => {
       setErrorMessage("Please answer all questions before submitting.");
       return;
     }
+
     setQuizCompleted(true);
   };
 
@@ -140,7 +136,6 @@ const Quiz = () => {
     </div>
   ) : (
     <div className="flex flex-col items-center w-full">
-      <ToastContainer position="top-right" />
       <h1 className="font-semibold text-4xl mb-8">Quiz Result</h1>
       <div className="bg-[#F8DB39] text-center py-8 px-10 mb-8 rounded-lg text-white font-medium text-2xl">
         <p className="mb-4">Title: Quiz</p>
