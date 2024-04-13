@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
 import Quizzes from "./pages/Quizzes";
 import Profile from "./pages/Profile";
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="quiz/:id" element={<Quiz />} />
         <Route path="quizzes" element={<Quizzes />} />
         <Route path="profile" element={<Profile />} />
+        <Route index element={<Home />} />
       </Route>
     </Routes>
   );
