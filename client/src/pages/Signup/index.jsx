@@ -22,29 +22,6 @@ const Signup = () => {
     const [error, setError] = useState("");
     const { enqueueSnackbar } = useSnackbar()
 
-    // const onHandleSubmit = async (data) => {
-    //     try {
-    //         const res = await handleSignUp(data);
-    //         const success = res.success || false;
-    //         const errorFromServer = res.error || "";
-    //         console.log(res);
-
-    //         if (success) {
-    //             navigate('/login');
-    //         }
-
-    //         if (errorFromServer) {
-    //             if (errorFromServer === 'Пользователь уже существует') {
-    //                 setError(errorFromServer);
-    //             } else {
-    //                 enqueueSnackbar(errorFromServer, { variant: "error" });
-    //             }
-    //         }
-    //     } catch (error) {
-    //         enqueueSnackbar("Что-то пошло не так", { variant: "error" });
-    //     }
-    // }
-
     const {
         register,
         handleSubmit,
@@ -53,11 +30,12 @@ const Signup = () => {
         resolver: zodResolver(schema),
     });
 
+    const onSubmit = (data) => console.log(data);
 
     return (
-        <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[90px] mx-auto mb-[5rem] shadow-2xl p-6 rounded-3xl">
+        <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[70px] mx-auto mb-[5rem] shadow-2xl p-6 rounded-3xl">
             <h1 className="font-bold text-[38px] text-[#333333] mb-12">Регистрация</h1>
-            <form className="w-full flex flex-col">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col">
                 <div className="mb-10">
                     <div className="flex justify-between items-center">
                         <label htmlFor="email" className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">Ваш E-mail</label>
@@ -77,7 +55,7 @@ const Signup = () => {
                 </div>
                 <div className="mb-10">
                     <div className="flex justify-between items-center">
-                        <label htmlFor="password" className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">Ваш Пароль</label>
+                        <label htmlFor="password" className="ml-[2px] text-[#333333] text-2xl text-left self-start mb-[3px]">Пароль</label>
                         {errors.password && (
                             <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
                                 {errors.password.message}

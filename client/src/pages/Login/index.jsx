@@ -30,27 +30,7 @@ const Login = () => {
         resolver: zodResolver(schema),
     });
 
-    // const handleSignInHere = async (data) => {
-    //     try {
-    //         const res = await handleSignIn(data);
-    //         const success = res.success || false;
-    //         const errorFromServer = res.error || "";
-
-    //         if (success) {
-    //             navigate('/myaccount');
-    //         }
-    //         if (errorFromServer) {
-    //             if (errorFromServer === 'Пользователь уже существует') {
-    //                 setError(errorFromServer);
-    //             } else {
-    //                 enqueueSnackbar(errorFromServer, { variant: "error" });
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error("Error signing in:", error);
-    //     }
-    // }
-
+    const onSubmit = (data) => console.log(data);
 
     return (
         <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[70px] mx-auto shadow-2xl p-6 rounded-3xl">
