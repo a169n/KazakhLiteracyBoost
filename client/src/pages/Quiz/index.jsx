@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useGetQuizQuery } from '@/store/services/quizApi';
 import { HashLoader } from 'react-spinners';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Quiz = () => {
     const { data: quizData, isLoading } = useGetQuizQuery("661ac8c6dd1c1e45ddb70927");
@@ -32,31 +34,39 @@ const Quiz = () => {
         const updatedSelections = [...selectedOptionIndices];
         updatedSelections[currentQuestionIndex] = optionIndex;
         setSelectedOptionIndices(updatedSelections);
+        const currentQuestion = quizData.questions[currentQuestionIndex];
+        const selectedOption = currentQuestion.options[optionIndex];
+        if (selectedOption.isCorrect) {
+            setCorrectAnswersCount(prevCount => prevCount + 1);
+        }
         setErrorMessage(null);
     };
 
     const handleSubmitAnswer = () => {
-        const selectedOptionIndex = selectedOptionIndices[currentQuestionIndex];
-        if (selectedOptionIndex !== null && selectedOptionIndex !== undefined) {
-            const currentQuestion = quizData.questions[currentQuestionIndex];
-            const selectedOption = currentQuestion.options[selectedOptionIndex];
-
-            if (selectedOption.isCorrect) {
-                setCorrectAnswersCount(prevCount => prevCount + 1);
-            }
-
-            handleNextQuestion();
-        } else {
-            setErrorMessage('Please select an answer');
+        const allQuestionsAnswered = selectedOptionIndices.every(index => index !== null && index !== undefined);
+        if (!allQuestionsAnswered) {
+            setErrorMessage('Please answer all questions before submitting.');
+            return;
         }
+
+
+
+        setQuizCompleted(true);
     };
+
+    useEffect(() => {
+        if (quizCompleted) {
+            toast.success("Success Notification !", {
+                toastId: 'uniqueId'
+            })
+        }
+    }, [quizCompleted])
 
     if (isLoading) return (
         <div className='w-full flex items-center justify-center'>
             <HashLoader size={70} color='#F8DB39' />
         </div>
     )
-
 
     const currentQuestion = quizData.questions[currentQuestionIndex];
     const allQuestionsAnswered = selectedOptionIndices.every(index => index !== null && index !== undefined);
@@ -98,13 +108,11 @@ const Quiz = () => {
             </div>
         ) : (
             <div className="flex flex-col items-center w-full">
+                <ToastContainer position='top-right' />
                 <h1 className="font-semibold text-4xl mb-8">Quiz Result</h1>
                 <div className="bg-[#F8DB39] text-center py-8 px-10 mb-8 rounded-lg text-white font-medium text-2xl">
                     <p className="mb-4">Title: Quiz</p>
                     <p className="text-[#4CAF50]">Total Correct Answers: {correctAnswersCount} out of {quizData.questions.length}</p>
-                </div>
-                <div className="flex justify-center w-full">
-                    <img src="/quiz_result_image.svg" alt="Quiz Result Image" className="w-full max-w-[600px]" />
                 </div>
             </div>
         )
