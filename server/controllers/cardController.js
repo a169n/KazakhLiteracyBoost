@@ -25,11 +25,13 @@ const getCardById = async (req, res) => {
 
 const createCard = async (req, res) => {
   try {
-    const { definition } = req.body;
+    const { definition, translation, transcription } = req.body;
     const imagePath = req.file.path;
 
     const card = await Card.create({
       definition: definition,
+      translation: translation,
+      transcription: transcription,
       image: imagePath,
     });
 
