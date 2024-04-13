@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
-import { useLoginMutation } from "@/redux/services/authApi";
+import { useLoginMutation } from "@/store/services/authApi";
 
 const schema = z.object({
   email: z
@@ -23,8 +23,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
-  const [login, { isSuccess: loginSuccess, isError: loginError }] =
-    useLoginMutation();
+  const [login, { isError, isLoading }] = useLoginMutation();
+
+  useLoginMutation();
 
   const handleLogin = async (data) => {
     try {
@@ -32,8 +33,11 @@ const Login = () => {
         email: data.email,
         password: data.password,
       });
-      if (loginSuccess) {
-        console.log(`Welcome ${data.email}!`);
+
+      if (!isError) {
+        enqueueSnackbar("Логин прошел успешно!", { variant: "success" });
+      } else {
+        enqueueSnackbar("Что-то пошло не так", { variant: "error" });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -43,7 +47,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
   });
@@ -104,8 +108,9 @@ const Login = () => {
           className="text-[#979797] leading-8 cursor-pointer text-center underline mb-14">
           Забыли пароль?
         </Link>
-        <Button className="mb-4 self-center px-20">Войти</Button>
-      </form>
+        <Button className="mb-[10px] self-center" disabled={isSubmitting}>
+          {isLoading ? "Идет запрос..." : "Войти"}
+        </Button>      </form>
       <Link
         to="/signup"
         className="text-[#979797] text-center leading-8 cursor-pointer">
