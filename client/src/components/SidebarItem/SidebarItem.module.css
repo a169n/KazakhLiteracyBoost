@@ -1,0 +1,17 @@
+.sidebarItem {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    transition: color 0.3s ease-in-out;
+}
+
+.active {
+    color: "#003B8C";
+    /* Use your active color here */
+}
+
+.label {
+    font-size: 20px;
+    line-height: 30px;
+    text-transform: capitalize;
+}
