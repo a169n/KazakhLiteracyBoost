@@ -46,7 +46,7 @@ const WeeklyCompletedQuizzesChart = ({ weeklyData }) => {
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'top',
+                            position: 'bottom',
                         },
                     },
                 }

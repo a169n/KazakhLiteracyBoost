@@ -4,6 +4,8 @@ const cardSchema = mongoose.Schema(
   {
     definition: String,
     image: String,
+    translation: String,
+    transcription: String,
   },
   {
     timestamps: true,
