@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-
-const WeeklyCompletedQuizzesChart = ({ weeklyData }) => {
+const WeeklyCompletedQuizzesChart = ({ weeklyData, labelText, data }) => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
@@ -23,15 +22,15 @@ const WeeklyCompletedQuizzesChart = ({ weeklyData }) => {
 
             // Extract week numbers and completed counts
             const labels = Object.keys(weeklyCounts);
-            const data = Object.values(weeklyCounts);
+            const dataValues = Object.values(weeklyCounts);
 
             chartInstance.current = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Completed Quizzes',
-                        data: data,
+                        label: labelText,
+                        data: dataValues,
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
@@ -46,13 +45,20 @@ const WeeklyCompletedQuizzesChart = ({ weeklyData }) => {
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'bottom',
+                            position: 'top',
+                            fullSize: true,
+                            marginBottom: 10,
+                            labels: {
+                                font: {
+                                    size: 20
+                                },
+                            }
                         },
                     },
                 }
             });
         }
-    }, [weeklyData]);
+    }, [weeklyData, labelText]);
 
     const getWeekNumber = (date) => {
         const d = new Date(date);
@@ -66,9 +72,9 @@ const WeeklyCompletedQuizzesChart = ({ weeklyData }) => {
     return <canvas ref={chartRef} />;
 };
 
-
-
 const Home = () => {
+    const [selectedMetric, setSelectedMetric] = useState('Completed Tests');
+
     const weeklyData = [
         { date: '2024-03-27', completed: 5 },
         { date: '2024-04-03', completed: 8 },
@@ -79,10 +85,41 @@ const Home = () => {
         { date: '2024-05-08', completed: 4 }
     ];
 
+    const handleTabClick = (metric) => {
+        setSelectedMetric(metric);
+    };
+
+    let data;
+    let labelText;
+
+    switch (selectedMetric) {
+        case 'Completed Tests':
+            data = weeklyData.map(item => item.completed);
+            labelText = 'Completed Tests';
+            break;
+        case 'Earned Points':
+            // Example: Assuming points are earned weekly
+            data = [10, 20, 15, 25, 30, 35, 40];
+            labelText = 'Earned Points';
+            break;
+        case 'Active Days':
+            // Example: Assuming number of active days are calculated weekly
+            data = [3, 4, 5, 6, 7, 5, 4];
+            labelText = 'Active Days';
+            break;
+        // Add more cases for other metrics as needed
+        default:
+            break;
+    }
+
     return (
         <div className='w-full'>
-            <h2>Weekly Completed Quizzes</h2>
-            <WeeklyCompletedQuizzesChart weeklyData={weeklyData} />
+            <div className="flex justify-center mb-4">
+                <button className={`mr-2 px-4 py-2 ${selectedMetric === 'Completed Tests' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleTabClick('Completed Tests')}>Completed Tests</button>
+                <button className={`mr-2 px-4 py-2 ${selectedMetric === 'Earned Points' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleTabClick('Earned Points')}>Earned Points</button>
+                <button className={`px-4 py-2 ${selectedMetric === 'Active Days' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleTabClick('Active Days')}>Active Days</button>
+            </div>
+            <WeeklyCompletedQuizzesChart weeklyData={weeklyData} labelText={labelText} data={data} />
         </div>
     );
 };
