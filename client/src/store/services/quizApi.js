@@ -10,7 +10,7 @@ export const quizApi = createApi({
             }),
         }),
         getQuiz: builder.query({
-            query: ({ id }) => ({
+            query: (id) => ({
                 url: `/quizzes/${id}`,
             }),
         }),
