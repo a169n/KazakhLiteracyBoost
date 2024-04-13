@@ -13,8 +13,11 @@ const userSchema = mongoose.Schema(
     },
     completedQuizzes: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Quiz",
+        quiz: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Quiz",
+        },
+        score: Number,
       },
     ],
   },
