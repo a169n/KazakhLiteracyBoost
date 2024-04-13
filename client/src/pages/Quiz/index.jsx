@@ -1,8 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
+import { useGetQuizzesQuery } from '@/store/services/quizApi';
 
 const Quiz = () => {
+
+    const [data, { isLoading, isError, error }] = useGetQuizzesQuery()
+
+    useEffect(() => {
+        if (isError) {
+            console.error('Error fetching posts:', error);
+        } else {
+            console.log(data);
+        }
+    }, [isError, error, data]);
 
     const mockQuizData = [
         {
@@ -74,26 +85,32 @@ const Quiz = () => {
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="font-semibold text-[30px]">Quiz</h1>
-                <p className="font-semibold text-[30px]">Easy</p>
-            </div>
-            <ProgressBar progress={(currentQuestionIndex + 1) / mockQuizData.length * 100} className="mb-9" />
-            <div className="bg-[#F8DB39] text-center py-[57px] px-5 mb-5 rounded-[20px] text-white font-medium text-[26px]">
-                {currentQuestion.question}
-            </div>
-            <div className="w-full grid grid-cols-4 gap-5 mb-[30px]">
-                {currentQuestion.answers.map((answer, index) => (
-                    <div key={index} className="bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px]">
-                        {answer}
-                    </div>
-                ))}
-            </div>
-            <div className="flex justify-between items-center px-[25px]">
-                <p onClick={handlePreviousQuestion} className="text-[#F8DB39] font-bold">Previous</p>
-                <Button onClick={handleSubmitAnswer} className="bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px]">Submit</Button>
-                <p onClick={handleNextQuestion} className="text-[#F8DB39] font-bold">Next</p>
-            </div>
+            {
+                isLoading ? <p>Loading...</p> : (
+                    <>
+                        <div className="flex justify-between items-center mb-8">
+                            <h1 className="font-semibold text-[30px]">Quiz</h1>
+                            <p className="font-semibold text-[30px]">Easy</p>
+                        </div>
+                        <ProgressBar progress={(currentQuestionIndex + 1) / mockQuizData.length * 100} className="mb-9" />
+                        <div className="bg-[#F8DB39] text-center py-[57px] px-5 mb-5 rounded-[20px] text-white font-medium text-[26px]">
+                            {currentQuestion.question}
+                        </div>
+                        <div className="w-full grid grid-cols-4 gap-5 mb-[30px]">
+                            {currentQuestion.answers.map((answer, index) => (
+                                <div key={index} className="bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px]">
+                                    {answer}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-between items-center px-[25px]">
+                            <p onClick={handlePreviousQuestion} className="text-[#F8DB39] font-bold">Previous</p>
+                            <Button onClick={handleSubmitAnswer} className="bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px]">Submit</Button>
+                            <p onClick={handleNextQuestion} className="text-[#F8DB39] font-bold">Next</p>
+                        </div>
+                    </>
+                )
+            }
         </div>
     );
 }
