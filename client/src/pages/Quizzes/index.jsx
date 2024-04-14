@@ -6,9 +6,11 @@ const Quizzes = () => {
   const { data: quizzes, isLoading, isError } = useGetQuizzesQuery();
 
   if (isLoading) {
-    return <div className="w-full flex items-center justify-center">
-      <HashLoader size={70} color="#F8DB39" />
-    </div>;
+    return (
+      <div className="w-full flex items-center justify-center">
+        <HashLoader size={70} color="#F8DB39" />
+      </div>
+    );
   }
 
   if (isError) {
