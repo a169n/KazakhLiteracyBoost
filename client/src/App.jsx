@@ -9,6 +9,7 @@ import Chat from "./chat/Chat";
 import Home from "./pages/Home";
 import Texts from "./pages/Texts";
 import Reading from "./pages/Reading";
+import Cards from "./pages/Cards";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="quiz/:id" element={<Quiz />} />
         <Route path="reading" element={<Texts />} />
         <Route path="text/:id" element={<Reading />} />
+        <Route path="cards" element={<Cards />} />
+
         <Route path="profile" element={<Profile />} />
         <Route path="chat" element={<Chat />} />
 

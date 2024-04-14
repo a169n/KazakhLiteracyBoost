@@ -27,6 +27,7 @@ app.use("/", require("./routes/userRouter"));
 app.use("/", require("./routes/quizRoutes"));
 app.use("/", require("./routes/cardRouter"));
 app.use("/", require("./routes/chatRoutes"));
+app.use("/", require("./routes/textRouter"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
