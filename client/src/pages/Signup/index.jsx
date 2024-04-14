@@ -59,7 +59,7 @@ const Signup = () => {
 
     return (
         <div className="flex flex-col items-center bg-white shrink-0 w-[650px] py-[52px] px-[90px] mx-auto mb-[5rem] shadow-2xl p-6 rounded-3xl">
-            <h1 className="font-bold text-[38px] text-[#333333] mb-12">
+            <h1 className="font-bold text-[38px] text-[#333333] mb-12 mt-10">
                 Регистрация
             </h1>
             <form
