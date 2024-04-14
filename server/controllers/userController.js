@@ -28,11 +28,36 @@ const getUser = async (req, res) => {
   }
 };
 
+const addPointsToUser = async (req, res) => {
+  const reqUser = req.user;
+  const { pointsToAdd } = req.body;
+
+  if (isNaN(pointsToAdd)) {
+    return res.status(400).json({ message: "Invalid pointsToAdd value" });
+  }
+
+  try {
+    const user = await User.findById(reqUser._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const pointsToAddNum = parseInt(pointsToAdd);
+
+    user.points += pointsToAddNum;
+    await user.save();
+
+    res.status(200).json({ message: "Points added to user successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to add points to user" });
+  }
+};
+
 const saveCompletedQuiz = async (req, res) => {
   const user = req.user;
   const { quizId, score } = req.body;
-
-  console.log(user);
 
   try {
     if (!user) {
@@ -74,7 +99,7 @@ const getCompletedTestsForWeek = async (req, res) => {
     console.log(completedTests);
     const weeklyData = {};
 
-    completedTests.forEach(completedQuiz => {
+    completedTests.forEach((completedQuiz) => {
       const completionDate = new Date(completedQuiz.createdAt);
 
       const isoWeekDate = getISOWeekDate(completionDate);
@@ -86,30 +111,33 @@ const getCompletedTestsForWeek = async (req, res) => {
       weeklyData[isoWeekDate]++;
     });
 
-    const formattedWeeklyData = Object.keys(weeklyData).map(date => ({
+    const formattedWeeklyData = Object.keys(weeklyData).map((date) => ({
       date,
-      completed: weeklyData[date]
+      completed: weeklyData[date],
     }));
 
     res.status(200).json(formattedWeeklyData);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
-
   }
-}
+};
 
 const getISOWeekDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const isoWeekDate = `${year}-W${String(Math.floor((day + 6) / 7)).padStart(2, '0')}`;
+  const isoWeekDate = `${year}-W${String(Math.floor((day + 6) / 7)).padStart(
+    2,
+    "0"
+  )}`;
   return isoWeekDate;
 };
 
 module.exports = {
   getAllUsers,
   getUser,
+  addPointsToUser,
   saveCompletedQuiz,
   deleteUserById,
-  getCompletedTestsForWeek
+  getCompletedTestsForWeek,
 };

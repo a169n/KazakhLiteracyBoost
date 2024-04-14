@@ -33,6 +33,16 @@ export const usersApi = createApi({
         method: "DELETE",
       }),
     }),
+    addPointsToUser: builder.mutation({
+      query: ({ token, ...data }) => ({
+        url: "/user/addPoints",
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -47,4 +57,6 @@ export const {
   useUpdateUserQuizMutation,
   // DELETE /users/:userId
   useDeleteUserByIdMutation,
+  // PUT /user/addPoints
+  useAddPointsToUserMutation,
 } = usersApi;

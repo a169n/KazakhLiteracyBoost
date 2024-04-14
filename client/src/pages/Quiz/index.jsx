@@ -6,7 +6,10 @@ import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
-import { useUpdateUserQuizMutation } from "@/store/services/usersApi";
+import {
+  useAddPointsToUserMutation,
+  useUpdateUserQuizMutation,
+} from "@/store/services/usersApi";
 
 const Quiz = () => {
   const { id } = useParams();
@@ -76,13 +79,33 @@ const Quiz = () => {
     }
   };
 
+  const [addPointsToUser] = useAddPointsToUserMutation();
+
   useEffect(() => {
-    if (quizCompleted) {
-      toast.success(`You earned ${correctAnswersCount * 10} points!`, {
-        toastId: "uniqueId",
-      });
-    }
-  }, [quizCompleted, correctAnswersCount]);
+    const updatePoints = async () => {
+      if (quizCompleted) {
+        try {
+          const response = await addPointsToUser({
+            token: user?.token,
+            points: correctAnswersCount * 10,
+          });
+
+          if (response.error) {
+            console.error("Error updating user points:", response.error);
+            return;
+          }
+
+          toast.success(`You earned ${correctAnswersCount * 10} points!`, {
+            toastId: "uniqueId",
+          });
+        } catch (error) {
+          console.error("Error updating user points:", error);
+        }
+      }
+    };
+
+    updatePoints();
+  }, [addPointsToUser, correctAnswersCount, quizCompleted]);
 
   if (isLoading)
     return (
@@ -117,10 +140,11 @@ const Quiz = () => {
         {currentQuestion.options.map((option, index) => (
           <div
             key={index}
-            className={`bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px] border-[2px] ${selectedOptionIndices[currentQuestionIndex] === index
-              ? "border-purple-600"
-              : "border-transparent"
-              }`}
+            className={`bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px] border-[2px] ${
+              selectedOptionIndices[currentQuestionIndex] === index
+                ? "border-purple-600"
+                : "border-transparent"
+            }`}
             onClick={() => handleSelectOption(index)}>
             {option.optionText}
           </div>
@@ -138,8 +162,9 @@ const Quiz = () => {
           {currentQuestionIndex === quizData?.questions.length - 1 && (
             <Button
               onClick={handleSubmitAnswer}
-              className={`bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px] ${allQuestionsAnswered ? "" : "hidden"
-                }`}>
+              className={`bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px] ${
+                allQuestionsAnswered ? "" : "hidden"
+              }`}>
               {quizCompleted ? "Completed" : "Submit"}
             </Button>
           )}
