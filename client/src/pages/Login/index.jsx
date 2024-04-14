@@ -3,7 +3,6 @@ import Button from "@/components/ui/Button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useSnackbar } from "notistack";
 import { useLoginMutation } from "@/store/services/authApi";
 
@@ -20,7 +19,6 @@ const schema = z.object({
 
 const Login = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
   const [login, { isError, isLoading }] = useLoginMutation();
@@ -36,6 +34,7 @@ const Login = () => {
 
       if (!isError) {
         enqueueSnackbar("Логин прошел успешно!", { variant: "success" });
+        navigate("/")
       } else {
         enqueueSnackbar("Что-то пошло не так", { variant: "error" });
       }
@@ -88,11 +87,6 @@ const Login = () => {
             {errors.password && (
               <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
                 {errors.password.message}
-              </p>
-            )}
-            {error && (
-              <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
-                {error}
               </p>
             )}
           </div>
