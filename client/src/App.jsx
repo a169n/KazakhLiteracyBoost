@@ -22,7 +22,6 @@ function App() {
         <Route path="reading" element={<Texts />} />
         <Route path="text/:id" element={<Reading />} />
         <Route path="cards" element={<Cards />} />
-
         <Route path="profile" element={<Profile />} />
         <Route path="chat" element={<Chat />} />
 
