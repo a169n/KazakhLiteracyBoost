@@ -6,7 +6,9 @@ import Quiz from "./pages/Quiz";
 import Quizzes from "./pages/Quizzes";
 import Profile from "./pages/Profile";
 import Chat from "./chat/Chat";
-import Home from './pages/Home';
+import Home from "./pages/Home";
+import Texts from "./pages/Texts";
+import Reading from "./pages/Reading";
 
 function App() {
   return (
@@ -14,10 +16,13 @@ function App() {
       <Route path="signup" element={<Signup />} />
       <Route path="login" element={<Login />} />
       <Route path="/" element={<Layout />}>
-        <Route path="quiz/:id" element={<Quiz />} />
         <Route path="quizzes" element={<Quizzes />} />
+        <Route path="quiz/:id" element={<Quiz />} />
+        <Route path="reading" element={<Texts />} />
+        <Route path="text/:id" element={<Reading />} />
         <Route path="profile" element={<Profile />} />
         <Route path="chat" element={<Chat />} />
+
         <Route index element={<Home />} />
       </Route>
     </Routes>
