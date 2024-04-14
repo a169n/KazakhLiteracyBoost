@@ -3,10 +3,13 @@ import { IconUserSquareRounded } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../store/slices/authSlice";
+import { useGetUserQuery } from "@/store/services/usersApi";
 
 const Header = () => {
   const user = useUser();
   const dispatch = useDispatch();
+
+  const { data: userData } = useGetUserQuery(user?.token);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -41,10 +44,10 @@ const Header = () => {
             </Link>
             <div className="flex flex-col">
               <p className="font-medium text-sm leading-[21px] text-[#003050]">
-                Welcome {user.username}
+                {userData?.username}
               </p>
-              <p className="font-medium text-[12px] leading-[18px] text-[#00D1FF]">
-                Exp: {user.points}
+              <p className="font-medium text-[12px] leading-[18px] text-[#003050]">
+                Exp: <b>{userData?.points}</b>
               </p>
             </div>
           </div>
