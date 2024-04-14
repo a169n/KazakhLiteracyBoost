@@ -13,14 +13,12 @@ const WeeklyCompletedQuizzesChart = ({ weeklyData, labelText, data }) => {
 
             const ctx = chartRef.current.getContext('2d');
 
-            // Aggregate data by week
             const weeklyCounts = weeklyData.reduce((acc, { completed, date }) => {
                 const weekNumber = getWeekNumber(new Date(date));
                 acc[weekNumber] = (acc[weekNumber] || 0) + completed;
                 return acc;
             }, {});
 
-            // Extract week numbers and completed counts
             const labels = Object.keys(weeklyCounts);
             const dataValues = Object.values(weeklyCounts);
 
@@ -98,16 +96,13 @@ const Home = () => {
             labelText = 'Completed Tests';
             break;
         case 'Earned Points':
-            // Example: Assuming points are earned weekly
             data = [10, 20, 15, 25, 30, 35, 40];
             labelText = 'Earned Points';
             break;
         case 'Active Days':
-            // Example: Assuming number of active days are calculated weekly
             data = [3, 4, 5, 6, 7, 5, 4];
             labelText = 'Active Days';
             break;
-        // Add more cases for other metrics as needed
         default:
             break;
     }

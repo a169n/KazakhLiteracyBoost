@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useGetQuizzesQuery } from "../../store/services/quizApi";
+import { HashLoader } from "react-spinners";
 
 const Quizzes = () => {
   const { data: quizzes, isLoading, isError } = useGetQuizzesQuery();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="w-full flex items-center justify-center">
+      <HashLoader size={70} color="#F8DB39" />
+    </div>;
   }
 
   if (isError) {

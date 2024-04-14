@@ -40,6 +40,7 @@ const saveCompletedQuiz = async (req, res) => {
     }
 
     user.completedQuizzes.push({ quiz: quizId, score });
+    user.points += score * 10;
     await user.save();
 
     res
@@ -65,9 +66,50 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+const getCompletedTestsForWeek = async (req, res) => {
+  const user = req.user;
+  console.log(user);
+  try {
+    const completedTests = user.completedTests;
+    console.log(completedTests);
+    const weeklyData = {};
+
+    completedTests.forEach(completedQuiz => {
+      const completionDate = new Date(completedQuiz.createdAt);
+
+      const isoWeekDate = getISOWeekDate(completionDate);
+
+      if (!weeklyData[isoWeekDate]) {
+        weeklyData[isoWeekDate] = 0;
+      }
+
+      weeklyData[isoWeekDate]++;
+    });
+
+    const formattedWeeklyData = Object.keys(weeklyData).map(date => ({
+      date,
+      completed: weeklyData[date]
+    }));
+
+    res.status(200).json(formattedWeeklyData);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+
+  }
+}
+
+const getISOWeekDate = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const isoWeekDate = `${year}-W${String(Math.floor((day + 6) / 7)).padStart(2, '0')}`;
+  return isoWeekDate;
+};
+
 module.exports = {
   getAllUsers,
   getUser,
   saveCompletedQuiz,
   deleteUserById,
+  getCompletedTestsForWeek
 };

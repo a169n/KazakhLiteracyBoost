@@ -47,7 +47,7 @@ const Quiz = () => {
   };
 
   const user = useUser();
-  const [saveQuiz, { isError, isSuccess }] = useUpdateUserQuizMutation();
+  const [saveQuiz] = useUpdateUserQuizMutation();
 
   const handleSubmitAnswer = async () => {
     const allQuestionsAnswered = selectedOptionIndices.every(
@@ -78,11 +78,11 @@ const Quiz = () => {
 
   useEffect(() => {
     if (quizCompleted) {
-      toast.success("Success Notification !", {
+      toast.success(`You earned ${correctAnswersCount * 10} points!`, {
         toastId: "uniqueId",
       });
     }
-  }, [quizCompleted]);
+  }, [quizCompleted, correctAnswersCount]);
 
   if (isLoading)
     return (
@@ -117,11 +117,10 @@ const Quiz = () => {
         {currentQuestion.options.map((option, index) => (
           <div
             key={index}
-            className={`bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px] border-[2px] ${
-              selectedOptionIndices[currentQuestionIndex] === index
-                ? "border-purple-600"
-                : "border-transparent"
-            }`}
+            className={`bg-[#FFF9D7] text-center px-[10px] py-[60px] rounded-[20px] font-medium text-[24px] leading-[36px] border-[2px] ${selectedOptionIndices[currentQuestionIndex] === index
+              ? "border-purple-600"
+              : "border-transparent"
+              }`}
             onClick={() => handleSelectOption(index)}>
             {option.optionText}
           </div>
@@ -139,9 +138,8 @@ const Quiz = () => {
           {currentQuestionIndex === quizData?.questions.length - 1 && (
             <Button
               onClick={handleSubmitAnswer}
-              className={`bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px] ${
-                allQuestionsAnswered ? "" : "hidden"
-              }`}>
+              className={`bg-[#F8DB39] text-white font-bold capitalize px-[50px] py-3 rounded-[16px] ${allQuestionsAnswered ? "" : "hidden"
+                }`}>
               {quizCompleted ? "Completed" : "Submit"}
             </Button>
           )}
