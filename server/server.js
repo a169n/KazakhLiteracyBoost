@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const path = require("path")
+const path = require("path");
 require("dotenv").config();
 const { connectDB } = require("./config/db");
 
@@ -26,7 +26,7 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/", require("./routes/userRouter"));
 app.use("/", require("./routes/quizRoutes"));
 app.use("/", require("./routes/cardRouter"));
-
+app.use("/", require("./routes/chatRoutes"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
