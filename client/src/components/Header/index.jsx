@@ -17,7 +17,7 @@ const Header = () => {
   };
 
   return (
-    <ul className="flex items-center justify-end gap-3 ml-auto">
+    <ul className="flex items-center justify-end gap-3 ml-auto px-[50px] py-[20px]">
       {user ? (
         <button
           onClick={handleLogout}
