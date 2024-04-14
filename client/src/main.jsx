@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Provider store={store}>
         <SnackbarProvider>
-          <ToastContainer position="top-right" />
+          <ToastContainer position="top-right" pauseOnHover={false} stacked={true} />
           <App />
         </SnackbarProvider>
       </Provider>

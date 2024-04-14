@@ -4,6 +4,7 @@ const {
   getUser,
   deleteUserById,
   saveCompletedQuiz,
+  getCompletedTestsForWeek
 } = require("../controllers/userController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -14,5 +15,6 @@ router.get("/users", getAllUsers);
 router.get("/user", protect, getUser);
 router.put("/users/quiz", protect, saveCompletedQuiz);
 router.delete("/users/:userId", deleteUserById);
+router.get("/getCompletedTestsForWeek", getCompletedTestsForWeek)
 
 module.exports = router;
