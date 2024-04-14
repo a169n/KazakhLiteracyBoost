@@ -104,9 +104,9 @@ const Login = () => {
           />
         </div>
         <Link
-          to="/recoverPassword"
+          to="/signup"
           className="text-[#979797] leading-8 cursor-pointer text-center underline mb-14">
-          Забыли пароль?
+          Нет аккаунта? Зарегистрируйтесь
         </Link>
         <Button className="mb-[10px] self-center" disabled={isSubmitting}>
           {isLoading ? "Идет запрос..." : "Войти"}

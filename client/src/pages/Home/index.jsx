@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
+import Header from '@/components/Header';
 
 const WeeklyCompletedQuizzesChart = ({ weeklyData, labelText, data }) => {
     const chartRef = useRef(null);
@@ -109,6 +110,7 @@ const Home = () => {
 
     return (
         <div className='w-full'>
+            <Header />
             <div className="flex justify-center mb-4">
                 <button className={`mr-2 px-4 py-2 ${selectedMetric === 'Completed Tests' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleTabClick('Completed Tests')}>Completed Tests</button>
                 <button className={`mr-2 px-4 py-2 ${selectedMetric === 'Earned Points' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleTabClick('Earned Points')}>Earned Points</button>
