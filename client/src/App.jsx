@@ -6,6 +6,7 @@ import Quiz from "./pages/Quiz";
 import Quizzes from "./pages/Quizzes";
 import Profile from "./pages/Profile";
 import Chat from "./chat/Chat";
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="quizzes" element={<Quizzes />} />
         <Route path="profile" element={<Profile />} />
         <Route path="chat" element={<Chat />} />
+        <Route index element={<Home />} />
       </Route>
     </Routes>
   );
