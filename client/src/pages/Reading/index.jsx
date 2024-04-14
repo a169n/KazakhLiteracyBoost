@@ -25,7 +25,7 @@ const Reading = () => {
         className="border border-gray-300 rounded-lg p-2 px-2 mb-4 resize-none w-[600px] md:w-auto"
         value={text}
         onChange={handleInputChange}
-        placeholder="Paste text here..."
+        placeholder='Абай ақын туралы 4 томдық "Абай жолы" романы жазылған. Бұл романның авторы Мұхтар Әуезов. Бұл кітаптарда бала Абайдың тұлға, әрі болашақ ақын болып қалыптасқанға дейінгі уақыттар кезеңдермен жазылған. «Абай жолы» романын жазған кім?'
         rows={10}
         cols={50}
       />
