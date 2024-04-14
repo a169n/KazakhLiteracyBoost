@@ -6,6 +6,7 @@ import { usersApi } from "./services/usersApi";
 import { quizApi } from "./services/quizApi";
 import { textApi } from "./services/textApi";
 import { readingApi } from "./services/readingApi";
+import { cardsApi } from "./services/cardsApi";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     [quizApi.reducerPath]: quizApi.reducer,
     [textApi.reducerPath]: textApi.reducer,
     [readingApi.reducerPath]: readingApi.reducer,
+    [cardsApi.reducerPath]: cardsApi.reducer,
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) => {
@@ -23,6 +25,7 @@ const store = configureStore({
       quizApi.middleware,
       textApi.middleware,
       readingApi.middleware,
+      cardsApi.middleware,
     ]);
   },
 });
