@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useSnackbar } from "notistack";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterMutation } from "@/store/services/authApi";
@@ -23,7 +22,6 @@ const schema = z.object({
 
 const Signup = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
     const { enqueueSnackbar } = useSnackbar();
 
     const [registerUser, { isError, isLoading }] = useRegisterMutation();
@@ -40,6 +38,7 @@ const Signup = () => {
 
             if (!isError) {
                 enqueueSnackbar("Регистрация успешна!", { variant: "success" });
+                navigate("/login")
             } else {
                 enqueueSnackbar("Что-то пошло не так", { variant: "error" });
             }
@@ -137,11 +136,6 @@ const Signup = () => {
                                 {errors.email.message}
                             </p>
                         )}
-                        {error && (
-                            <p className="text-[#FF0000] font-medium text-lg leading-8 self-start">
-                                {error}
-                            </p>
-                        )}
                     </div>
                     <input
                         {...register("email")}
@@ -177,7 +171,7 @@ const Signup = () => {
             <Link
                 to="/login"
                 className="text-[#979797] leading-8 cursor-pointer disabled:cursor-not-allowed">
-                Уже есть аккаунт?{" "}
+                Уже есть аккаунт?
                 <span className="font-bold capitalize underline">Войти</span>
             </Link>
         </div>
