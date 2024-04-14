@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import Message from "./Message.jsx";
 import TypingIndicator from "./TypingIndicator.jsx";
-import "../css/ChatBody.css";
 
 const ChatBody = ({
   chatMessages,
@@ -17,12 +16,10 @@ const ChatBody = ({
   }, [chatMessages]);
 
   return (
-    <div className='chat-body' id='chat-body' ref={chatBodyRef}>
-      {/* Render Message component for each message in chatMessages*/}
+    <div className="chat-body h-80 overflow-y-auto px-4 py-2">
       {chatMessages.map((chat, index) => (
         <Message key={index} message={chat.message} type={chat.type} />
       ))}
-      {/* If isChatbotTyping is true, it renders a TypingIndicator component */}
       {isChatbotTyping && (
         <TypingIndicator typingIndicatorMessage={typingIndicatorMessage} />
       )}
